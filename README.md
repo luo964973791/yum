@@ -8,7 +8,21 @@ for pkg in nvidia-docker2 libnvidia-container1 libnvidia-container-tools nvidia-
 done
 
 #命令适用于Tlinux系统
-for pkg in curl lzo lzo-devel snappy zlib zlib-devel which httpd mysql expect openssl openssl-devel bzip2-libs lz4-devel asciidoc cyrus-sasl cyrus-sasl-devel cyrus-sasl-gssapi gcc gcc-c++ libxml2-devel libxslt-devel sqlite-devel gmp-devel cyrus-sasl-plain R dstat lrzsz redhat-lsb-core python2-devel python3-rpm-macros python3-pip python3-libs python3-setuptools python3 python3-rpm-generators python3-devel rsyslog libffi libffi-devel kernel-headers re2c autoconf make sudo python2-pip python2-wheel python3-mysqlclient openldap-servers sshpass docker-ce-cli docker-ce ; do   yum list "$pkg" --showduplicates     | awk -v p="$pkg" '$1 ~ "^"p"." {print $1,$2}'     | sed 's/\.[^.]* /-/'     | xargs -n1 -I{} yum download --resolve {} --destdir=/root/R; done
+for pkg in curl lzo lzo-devel snappy zlib zlib-devel which httpd mysql expect \
+    openssl openssl-devel bzip2-libs lz4-devel asciidoc cyrus-sasl \
+    cyrus-sasl-devel cyrus-sasl-gssapi gcc gcc-c++ libxml2-devel \
+    libxslt-devel sqlite-devel gmp-devel cyrus-sasl-plain R dstat \
+    lrzsz redhat-lsb-core python2-devel python3-rpm-macros python3-pip \
+    python3-libs python3-setuptools python3 python3-rpm-generators \
+    python3-devel rsyslog libffi libffi-devel kernel-headers re2c \
+    autoconf make sudo python2-pip python2-wheel python3-mysqlclient \
+    openldap-servers sshpass docker-ce-cli docker-ce; do
+    yum list "$pkg" --showduplicates \
+    | awk -v p="$pkg" '$1 ~ "^"p"." {print $1,$2}' \
+    | sed 's/\.[^.]* /-/' \
+    | xargs -n1 -I{} yum download --resolve {} --destdir=/root/R
+done
+
 
 
 
