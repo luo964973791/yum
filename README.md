@@ -1,6 +1,6 @@
 ```javascript
 #第一种方法：把所有版本的依赖都下载下来
-for pkg in createrepo bind lrzsz wget nvidia-docker2 libnvidia-container1 libnvidia-container-tools nvidia-container-toolkit nvidia-container-toolkit-base; do
+for pkg in nvidia-docker2 libnvidia-container1 libnvidia-container-tools nvidia-container-toolkit nvidia-container-toolkit-base; do
   yum list "$pkg" --showduplicates \
     | awk -v p="$pkg" '$1 ~ "^"p"." {print $1,$2}' \
     | sed 's/\.[^.]* /-/' \
