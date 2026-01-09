@@ -4,7 +4,7 @@ for pkg in nvidia-docker2 libnvidia-container1 libnvidia-container-tools; do
   yum list "$pkg" --showduplicates 2>/dev/null \
     | awk -v p="$pkg" '$1 ~ "^"p"\\." {print $1,$2}' \
     | sed "s/\.[^.]* /-/; s/${pkg}-[0-9]\+:/${pkg}-/" \
-    | xargs -n1 -I{} yumdownloader --resolve {} --destdir=/root/rom
+    | xargs -I{} yumdownloader --resolve {} --destdir=/root/rom
 done
 
 #命令适用于Tlinux8或者Centos8系统
@@ -12,7 +12,7 @@ for pkg in bind; do
     yum list "$pkg" --showduplicates \
     | awk -v p="$pkg" '$1 ~ "^"p"." {print $1,$2}' \
     | sed 's/\.[^.]* /-/' \
-    | xargs -n1 -I{} yum download --resolve {} --destdir=/root/R
+    | xargs -I{} yum download --resolve {} --destdir=/root/R
 done
 
 
@@ -21,7 +21,7 @@ for pkg in nvidia-docker2 libnvidia-container1 libnvidia-container-tools nvidia-
   yum list "$pkg" --showduplicates \
     | awk -v p="$pkg" '$1 ~ "^"p"." {print $1,$2}' \
     | sed 's/\.[^.]* /-/' \
-    | xargs -n1 -I{} yum download --resolve --installroot=/tmp/fake-root --releasever=8 {} --destdir=/root/test
+    | xargs -I{} yum download --resolve --installroot=/tmp/fake-root --releasever=8 {} --destdir=/root/test
 done
 
 
