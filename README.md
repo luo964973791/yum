@@ -1,6 +1,6 @@
 ```javascript
 ### Centos7下载包方法.
-for pkg in nvidia-docker2 libnvidia-container1 libnvidia-container-tools; do
+for pkg in nvidia-docker2 libnvidia-container1 libnvidia-container-tools python3-pip python2-pip telnet tcpdump make cmake gcc-c++ expect rsync tar unzip fio bind-utils arp lsof yum-utils createrepo; do
   yum list "$pkg" --showduplicates 2>/dev/null \
     | awk -v p="$pkg" '$1 ~ "^"p"\\." {print $1,$2}' \
     | sed "s/\.[^.]* /-/; s/${pkg}-[0-9]\+:/${pkg}-/" \
