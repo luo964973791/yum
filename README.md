@@ -7,13 +7,16 @@ for pkg in kernel python3-pip python2-pip telnet bc tcpdump make cmake chrony ne
 
     yum list "$pkg" --showduplicates 2>/dev/null | \
     awk -v p="$pkg" '
-        # 匹配以包名开头的行
-        $1 ~ "^"p"\\." {
+        # 移除包名列中的架构后缀进行比对
+        {
+            split($1, a, "."); 
+            pure_name = a[1];
+        }
+        # 使用精确字符串比较，避开正则符号错误
+        pure_name == p {
             if (NF >= 2) {
-                # 包名和版本在同一行
                 print $1 "-" $2
             } else {
-                # 包名在当前行，版本在下一行
                 name = $1
                 if (getline > 0) print name "-" $1
             }
@@ -21,9 +24,7 @@ for pkg in kernel python3-pip python2-pip telnet bc tcpdump make cmake chrony ne
     ' | \
     sed -E 's/\.(aarch64|noarch|x86_64)-/-/' | \
     xargs -r -I{} yumdownloader --resolve {} --destdir=/root/kylin-arm64
-
 done
-
 yum install kernel-4.19.90-89.17.v2401.ky10 -y
 
 #命令适用于Tlinux8或者Centos8系统
