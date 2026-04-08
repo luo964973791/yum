@@ -1,11 +1,13 @@
 ```javascript
 ### Centos7下载包方法.
-for pkg in nvidia-docker2 libnvidia-container1 libnvidia-container-tools python3-pip python2-pip telnet tcpdump make cmake net-tools gcc-c++ expect rsync tar unzip fio bind-utils lsof yum-utils createrepo; do
+for pkg in kernel python3-pip python2-pip telnet bc tcpdump make cmake chrony net-tools gcc-c++ expect rsync tar unzip fio bind-utils sshpass lsof createrepo; do
   yum list "$pkg" --showduplicates 2>/dev/null \
     | awk -v p="$pkg" '$1 ~ "^"p"\\." {print $1,$2}' \
     | sed "s/\.[^.]* /-/; s/${pkg}-[0-9]\+:/${pkg}-/" \
-    | xargs -I{} yumdownloader --resolve {} --destdir=/root/rom
+    | xargs -I{} yumdownloader --resolve {} --destdir=/root/kylin-arm64
 done
+
+yum install kernel-4.19.90-89.17.v2401.ky10 -y
 
 #命令适用于Tlinux8或者Centos8系统
 for pkg in bind; do
