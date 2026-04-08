@@ -1,6 +1,29 @@
 ```javascript
 ### Centos7下载包方法.
-for pkg in kernel python3-pip python2-pip telnet bc tcpdump make cmake chrony net-tools gcc-c++ expect rsync tar unzip fio bind-utils sshpass lsof createrepo; do yum list "$pkg" --showduplicates | grep "$pkg" | awk '{gsub(/\.(aarch64|noarch|x86_64)/, "", $1); print $1"-"$2}' | sed 's/:/-/g' | xargs -I{} yumdownloader --resolve {} --destdir=/root/kylin-arm64; done
+for pkg in kernel python3-pip python2-pip telnet bc tcpdump make cmake chrony net-tools \
+           gcc-c++ expect rsync tar unzip fio bind-utils sshpass lsof createrepo; do
+
+    echo ">>> Processing: $pkg"
+
+    yum list "$pkg" --showduplicates 2>/dev/null | \
+    awk -v p="$pkg" '
+        # 匹配以包名开头的行
+        $1 ~ "^"p"\\." {
+            if (NF >= 2) {
+                # 包名和版本在同一行
+                print $1 "-" $2
+            } else {
+                # 包名在当前行，版本在下一行
+                name = $1
+                if (getline > 0) print name "-" $1
+            }
+        }
+    ' | \
+    sed -E 's/\.(aarch64|noarch|x86_64)-/-/' | \
+    xargs -r -I{} yumdownloader --resolve {} --destdir=/root/kylin-arm64
+
+done
+
 yum install kernel-4.19.90-89.17.v2401.ky10 -y
 
 #命令适用于Tlinux8或者Centos8系统
