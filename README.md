@@ -31,7 +31,7 @@ for pkg in kernel python3-pip python2-pip telnet bc tcpdump make cmake chrony ne
   yum list "$pkg" --showduplicates 2>/dev/null | grep -v ".src" | \
   awk -v p="$pkg" 'index($1, p".") == 1 {print $1,$2}' | \
   sed "s/\.[^.]* /-/; s/${pkg}-[0-9]\+:/${pkg}-/" | \
-  xargs -r -I{} yumdownloader --resolve {} --destdir=/root/test
+  xargs -r -I{} yumdownloader --resolve {} --destdir=/root/kylin-arm64
 done
 yum install kernel-4.19.90-89.17.v2401.ky10 -y
 
