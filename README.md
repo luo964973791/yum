@@ -1,32 +1,6 @@
 ```javascript
 ### Centos7下载包方法.
-for pkg in kernel python3-pip python2-pip telnet bc tcpdump make cmake chrony net-tools \
-           gcc-c++ expect rsync tar unzip fio bind-utils sshpass lsof createrepo; do
-
-    echo ">>> Processing: $pkg"
-
-    yum list "$pkg" --showduplicates 2>/dev/null | \
-    awk -v p="$pkg" '
-        # 移除包名列中的架构后缀进行比对
-        {
-            split($1, a, "."); 
-            pure_name = a[1];
-        }
-        # 使用精确字符串比较，避开正则符号错误
-        pure_name == p {
-            if (NF >= 2) {
-                print $1 "-" $2
-            } else {
-                name = $1
-                if (getline > 0) print name "-" $1
-            }
-        }
-    ' | \
-    sed -E 's/\.(aarch64|noarch|x86_64)-/-/' | \
-    xargs -r -I{} yumdownloader --resolve {} --destdir=/root/kylin-arm64
-done
-#再配合这个命令下载
-for pkg in kernel python3-pip python2-pip telnet bc tcpdump make cmake chrony net-tools gcc-c++ expect rsync tar unzip fio bind-utils sshpass lsof createrepo; do
+for pkg in kernel python3-pip python2-pip telnet bc tcpdump make cmake chrony net-tools gcc-c++ expect rsync tar unzip fio bind-utils sshpass lsof createrepo_c; do
   echo ">>> Downloading: $pkg"
   yum list "$pkg" --showduplicates 2>/dev/null | grep -v ".src" | \
   awk -v p="$pkg" 'index($1, p".") == 1 {print $1,$2}' | \
@@ -45,14 +19,13 @@ done
 
 
 #第一种方法：把所有版本的依赖都下载下来,试用麒麟系统,--releasever=8代表centos8
-for pkg in nvidia-docker2 libnvidia-container1 libnvidia-container-tools nvidia-container-toolkit nvidia-container-toolkit-base; do
-  yum list "$pkg" --showduplicates \
-    | awk -v p="$pkg" '$1 ~ "^"p"." {print $1,$2}' \
-    | sed 's/\.[^.]* /-/' \
-    | xargs -I{} yum download --resolve --installroot=/tmp/fake-root --releasever=8 {} --destdir=/root/test
+for pkg in kernel python3-pip python2-pip telnet bc tcpdump make cmake chrony net-tools gcc-c++ expect rsync tar unzip fio bind-utils sshpass lsof createrepo_c; do
+  echo ">>> Downloading: $pkg"
+  yum list "$pkg" --showduplicates 2>/dev/null | grep -v ".src" | \
+  awk -v p="$pkg" 'index($1, p".") == 1 {print $1,$2}' | \
+  sed "s/\.[^.]* /-/; s/${pkg}-[0-9]\+:/${pkg}-/" | \
+  xargs -r -I{} yumdownloader --resolve {} --releasever=8 {} --destdir=/root/kylin-arm64
 done
-
-
 
 mkdir -p /mnt/local-rpm
 createrepo /mnt/local-rpm
