@@ -1,13 +1,6 @@
 ```javascript
 ### Centos7下载包方法.
-for pkg in kernel python3-pip python2-pip telnet bc tcpdump make cmake chrony net-tools gcc-c++ expect rsync tar unzip fio bind-utils sshpass lsof createrepo_c; do
-  echo -e "\e[01;32m$(date '+%Y-%m-%d %H:%M:%S') [INFO] $pkg\e[01;00m"
-  yum list "$pkg" --showduplicates 2>/dev/null \
-    | grep -v ".src" \
-    | awk -v p="$pkg" 'index($1, p".") == 1 {print $1, $2}' \
-    | sed "s/\.[^.]* /-/; s/${pkg}-[0-9]\+:/${pkg}-/" \
-    | xargs -r -I{} yumdownloader --resolve {} --destdir=/root/kylin-arm64
-done
+echo -e "\e[01;32m$(date '+%Y-%m-%d %H:%M:%S') [INFO] 开始下载依赖包\e[01;00m"; for pkg in gcc-c++ make cmake net-tools; do yum list "$pkg" --showduplicates 2>/dev/null | grep -v ".src" | awk -v p="$pkg" 'index($1, p".") == 1 {print $1,$2}' | sed "s/\.[^.]* /-/; s/${pkg}-[0-9]\+:/${pkg}-/" | xargs -r -I{} sh -c 'yumdownloader --resolve {} --destdir=/root/kylin-arm64 && echo -e "\e[01;32m$(date +%Y-%m-%d\ %H:%M:%S) [INFO] {} 下载完成\e[01;00m"' ; done
 
 yum install kernel-4.19.90-89.17.v2401.ky10 -y
 
