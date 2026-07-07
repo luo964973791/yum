@@ -1,5 +1,8 @@
 ```javascript
 ### Centos7下载包方法.
+for pkg in docker-ce ; do echo ">>> Downloading: $pkg"; yum list "$pkg" --showduplicates 2>/dev/null | grep -v ".src" | awk -v p="$pkg" 'index($1, p".") == 1 {print $1,$2}' | sed "s/\.[^.]* /-/; s/${pkg}-[0-9]\+:/${pkg}-/" | xargs -r -I{} yumdownloader --resolve {} --destdir=/root/kylin-arm64 ; done
+
+
 for pkg in kernel python3-pip python2-pip telnet bc tcpdump make cmake chrony net-tools gcc-c++ expect rsync tar unzip fio bind-utils sshpass lsof createrepo_c; do
   echo ">>> Downloading: $pkg"
   yum list "$pkg" --showduplicates 2>/dev/null | grep -v ".src" | \
