@@ -57,6 +57,11 @@ baseurl=http://127.0.0.1:9999
 gpgcheck=0
 enabled=1
 
+
+#更新rpm后再yum服务器执行
+createrepo --update -v /var/www/html
+
+#在使用yum的服务器执行
 yum clean all
 yum repolist
 yum makecache
